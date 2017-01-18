@@ -67,7 +67,6 @@ def analysis_image(bucket, key, data):
     )
 
 
-
 def handler(event, context):
     for record in event['Records']:
         bucket = record['s3']['bucket']['name']
