@@ -34,26 +34,26 @@ def analysis_image(bucket, key, data):
     faces = False
     if detect_faces['FaceDetails']:
         face = detect_faces['FaceDetails'][0]
-        faces = {
-            'Confidence': Decimal(face['Confidence']),
-            'Emotions': [{'Confidence': Decimal(b['Confidence']), 'Type': b['Type']} for b in face['Emotions']],
-            'Eyeglasses': {
-                "Confidence": Decimal(face['Eyeglasses']['Confidence']),
-                "Value": face['Eyeglasses']['Value']
-            },
-            'Sunglasses': {
-                "Confidence": Decimal(face['Sunglasses']['Confidence']),
-                "Value": face['Sunglasses']['Value']
-            },
-            "Smile": {
-                "Confidence": Decimal(face['Smile']['Confidence']),
-                "Value": face['Smile']['Value']
-            },
-            "Gender": {
-                "Confidence": Decimal(face['Gender']['Confidence']),
-                "Value": face['Gender']['Value']
-            }
-        }
+        faces = {}
+
+        for index, value in face.items():
+            if isinstance(value, float):
+                faces[index] = Decimal(value)
+
+            if isinstance(value, dict):
+                faces[index] = {}
+                for nested_index, nested_value in value.items():
+                    faces[index][nested_index] = Decimal(nested_value) if isinstance(nested_value, float) else nested_value
+                    
+            if isinstance(value, list):
+                faces[index] = []
+                for nested_value in value:
+                    faces[index].append(
+                        {
+                          k:Decimal(v) if isinstance(v, float) else v
+                          for k, v in nested_value.items()
+                        }
+                    )
 
     table.put_item(
         Item={
@@ -71,9 +71,10 @@ def handler(event, context):
     for record in event['Records']:
         bucket = record['s3']['bucket']['name']
         key = record['s3']['object']['key']
+        size = record['s3']['object']['size']
 
-        data = key.split('/')
-
-        if len(data) > 3:
-            if data[-4] == "pro" or data[-4] == "user" or data[-4] == "member" :
-                analysis_image(bucket, key, data)
+        if size < 5242880:
+            data = key.split('/')
+            if len(data) > 3:
+                if data[-4] == "pro" or data[-4] == "user" or data[-4] == "member" :
+                    analysis_image(bucket, key, data)

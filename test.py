@@ -23,14 +23,14 @@ event = {
             "s3SchemaVersion":"1.0",
             "configurationId":"testConfigRule",
             "bucket":{
-               "name":"pitch-lambda-s3",
+               "name":"spitchapp-dev",
                "ownerIdentity":{
                   "principalId":"A3NL1KOZZKExample"
                },
-               "arn":"arn:aws:s3:::pitch-lambda-s3"
+               "arn":"arn:aws:s3:::spitchapp-dev"
             },
             "object":{
-               "key":"pro/15865/logo/img.jpg",
+               "key":"barney/media/user/10/photo/IMG_1911.JPG",
                "size":1024,
                "eTag":"d41d8cd98f00b204e9800998ecf8427e",
                "versionId":"096fKKXTRTtl3on89fVO.nfljtsv6qko"
