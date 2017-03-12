@@ -1,11 +1,11 @@
 import boto3
+import os
 from decimal import Decimal
 
-s3_client = boto3.client('s3')
+reco = boto3.client('rekognition', region_name=os.environ["REGION_REKOGNITION"])
 
-reco = boto3.client('rekognition')
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('Rekognition')
+table = dynamodb.Table(os.environ["NAME_DYNAMODB_TABLE"])
 
 
 def analysis_image(bucket, key, data):
@@ -44,7 +44,7 @@ def analysis_image(bucket, key, data):
                 faces[index] = {}
                 for nested_index, nested_value in value.items():
                     faces[index][nested_index] = Decimal(nested_value) if isinstance(nested_value, float) else nested_value
-                    
+
             if isinstance(value, list):
                 faces[index] = []
                 for nested_value in value:
