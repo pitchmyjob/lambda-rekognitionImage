@@ -3,28 +3,24 @@ import os
 from decimal import Decimal
 
 reco = boto3.client('rekognition', region_name=os.environ["REGION_REKOGNITION"])
-
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ["NAME_DYNAMODB_TABLE"])
-
+s3 = boto3.resource('s3')
 
 def analysis_image(bucket, key, data):
 
+    obj = s3.Object(bucket, key)
+    img_bytes = obj.get()["Body"].read()
+
     analysis = reco.detect_labels(
         Image={
-            'S3Object': {
-                'Bucket': bucket,
-                'Name': key
-            }
+            'Bytes': img_bytes
         }
     )
 
     detect_faces = reco.detect_faces(
         Image={
-            'S3Object': {
-                'Bucket': bucket,
-                'Name': key,
-            }
+            'Bytes': img_bytes
         },
         Attributes=[
             'ALL',
@@ -71,10 +67,8 @@ def handler(event, context):
     for record in event['Records']:
         bucket = record['s3']['bucket']['name']
         key = record['s3']['object']['key']
-        size = record['s3']['object']['size']
 
-        if size < 5242880:
-            data = key.split('/')
-            if len(data) > 3:
-                if data[-4] == "pro" or data[-4] == "user" or data[-4] == "member" :
-                    analysis_image(bucket, key, data)
+        data = key.split('/')
+        if len(data) > 3:
+            if data[-4] == "pro" or data[-4] == "user" or data[-4] == "member" :
+                analysis_image(bucket, key, data)

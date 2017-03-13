@@ -23,14 +23,14 @@ event = {
             "s3SchemaVersion":"1.0",
             "configurationId":"testConfigRule",
             "bucket":{
-               "name":"spitchapp-dev",
+               "name":"spitchtest33-bucket-gbwybe5mpq0o",
                "ownerIdentity":{
                   "principalId":"A3NL1KOZZKExample"
                },
-               "arn":"arn:aws:s3:::spitchapp-dev"
+               "arn":"arn:aws:s3:::spitchtest33-bucket-gbwybe5mpq0o"
             },
             "object":{
-               "key":"barney/media/user/10/photo/IMG_1911.JPG",
+               "key":"barney/media/user/10/photo/moi.png",
                "size":1024,
                "eTag":"d41d8cd98f00b204e9800998ecf8427e",
                "versionId":"096fKKXTRTtl3on89fVO.nfljtsv6qko"
